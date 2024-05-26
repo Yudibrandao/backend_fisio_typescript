@@ -83,13 +83,50 @@ export const login = async (userData: ModelUser) => {
     } catch (error) {
 
         return ("Algo a fallado " + error)
-
     }
-
-
 }
 
-export const modify = (data) => {
-    return "Modificado con exito"
+export const modify = async (token, data) => {
+    try {
+        let data_modify: any = {}
 
+        const yearNow = new Date().getFullYear()
+        const monthNow = new Date().getMonth()
+        const dayNow = new Date().getDate()
+
+        if (data.name) data_modify.name = data.name
+        if (data.lastName) data_modify.lastName = data.lastName
+
+        if (data.date) {
+            const userDate = new Date(data.date)
+            const yearUser = userDate.getFullYear()
+            const monthUser = userDate.getMonth()
+            const dayUser = userDate.getDate()
+
+            const dateCompare = new Date((yearNow - 18), monthNow, (dayNow + 1))
+            const dateUSer = new Date(yearUser, monthUser, (dayUser + 1))
+
+            if (dateUSer > dateCompare) return ("No estas autorizado para crear un usuario")
+
+            data_modify.date = dateUSer
+        }
+
+        if (data.email) {
+
+            if (!validateEmail(data.email)) return ("El formato email no es valido")
+
+            const emailExist = await User.findOne({ email: data.email })
+
+            if (emailExist) return ("Email o contraseña invalida")
+            data_modify.email = data.email
+        }
+
+        if (data.password) data_modify.password = await bcrypt.hash(data.password, Confidence.Loop_db)
+            console.log(data_modify)
+        await data_modify.save()
+
+        return (data_modify)
+
+    } catch (error) {
+    }
 }

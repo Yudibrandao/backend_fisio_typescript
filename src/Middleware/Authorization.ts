@@ -21,14 +21,8 @@ const authorization = (request, response, next) => {
         next()
 
     } catch (error) {
-
-        if (error instanceof jwt.JsonWebTokenError) {
             return response.status(403).json({ error: "Token inválido" });
-        }
-        next(error);
-
     }
 
 }
-
 export { authorization }

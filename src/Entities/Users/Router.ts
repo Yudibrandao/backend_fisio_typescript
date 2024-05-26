@@ -1,4 +1,4 @@
-import  express, { request }  from "express";
+import  express  from "express";
 import { login, modify, register } from "./Controller";
 import { authorization } from "../../Middleware/Authorization";
 
@@ -11,20 +11,17 @@ router.post('/register', async (request, response)=> {
      response.status(201).json(await register(request.body))
     
    } catch (error) {
-    
+    response.status(401).json()
    }
 })
-
 
 router.post('/login', async (request, response)=> {
    try { 
 
      response.status(201).json(await login(request.body))
     
-   } catch (error) {
-
-    
-    
+   } catch (error) { 
+    response.status(401).json()
    }
 })
 
@@ -32,13 +29,11 @@ router.post('/login', async (request, response)=> {
 router.put('/modify', authorization, async (request, response)=> {
   try {
 
-    response.status(201).json(await modify (request.body))
+    response.status(201).json(await modify ( request.user, request.body))
 
   } catch (error) {
-    
-    
+    response.status(401).json({sucess: false, msg: "No Autorizado"})
   }
-
 })
 
 
