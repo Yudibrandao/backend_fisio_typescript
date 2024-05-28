@@ -29,7 +29,7 @@ router.post('/login', async (request, response)=> {
 router.put('/modify', authorization, async (request, response)=> {
   try {
 
-    response.status(201).json(await modify ( request.user, request.body))
+    response.status(201).json(await (request.body))
 
   } catch (error) {
     response.status(401).json({sucess: false, msg: "No Autorizado"})
